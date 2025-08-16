@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const { isAuthenticated, currentUser, logout } = useAuth();
+  const { isAuthenticated, currentUser, isAdmin, logout } = useAuth();
 
   const publicNavItems = [
     { path: '/', label: 'Home' },
@@ -67,8 +67,8 @@ const Header = () => {
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
                   <User className="h-5 w-5 text-gray-600" />
-                  <span className="text-gray-700 font-medium">{currentUser?.name}</span>
-                  {currentUser?.isAdmin && (
+                  <span className="text-gray-700 font-medium">{currentUser?.username}</span>
+                  {isAdmin && (
                     <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Admin</span>
                   )}
                 </div>
@@ -118,8 +118,8 @@ const Header = () => {
               {isAuthenticated ? (
                 <div className="pt-4 border-t border-gray-200 mt-4">
                   <div className="px-3 py-2 text-sm text-gray-600">
-                    Logged in as: <span className="font-medium">{currentUser?.name}</span>
-                    {currentUser?.isAdmin && (
+                    Logged in as: <span className="font-medium">{currentUser?.username}</span>
+                    {isAdmin && (
                       <span className="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Admin</span>
                     )}
                   </div>
