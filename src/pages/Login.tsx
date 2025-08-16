@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { Shield, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -127,13 +127,13 @@ const Login = () => {
               </div>
             </div>
 
-            {/* <div className="mt-6 bg-gray-50 p-4 rounded-md">
+            <div className="mt-6 bg-gray-50 p-4 rounded-md">
               <p className="text-sm text-gray-600 mb-2">Use these credentials to test the system:</p>
               <div className="space-y-1 text-sm">
                 <p><strong>Employee:</strong> rajesh@starsecurity.com / password123</p>
                 <p><strong>Admin:</strong> priya@starsecurity.com / password123</p>
               </div>
-            </div> */}
+            </div>
           </div>
 
           <div className="mt-6 text-center">

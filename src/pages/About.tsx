@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { Calendar, Award, Users, Globe } from 'lucide-react';
 import { chairmanProfile, boardMembers, companyHistory } from '../data/mockData';
 

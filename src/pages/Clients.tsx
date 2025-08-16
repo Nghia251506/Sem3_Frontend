@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { Building, Users, MapPin, Phone } from 'lucide-react';
 import { clients } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';

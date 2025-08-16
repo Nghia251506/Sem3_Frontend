@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { MapPin, Calendar, Users, CheckCircle } from 'lucide-react';
 import { vacancies } from '../data/mockData';
 

@@ -1,83 +1,62 @@
-import React from 'react';
-import { Space, Table, Tag } from 'antd';
+import { useEffect } from "react";
+import { Space, Table, Tag, Button } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "../redux/store";
+import { fetchEmployees, removeEmployee } from "../redux/employeeSlice";
+import { Employee } from "../types/Employee";
 
-const { Column, ColumnGroup } = Table;
+const { Column } = Table;
 
-interface DataType {
-  key: React.Key;
-  firstName: string;
-  lastName: string;
-  age: number;
-  address: string;
-  tags: string[];
-}
+const ManageEmployees: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const employees = useSelector((state: RootState) => state.employees.items);
 
-const data: DataType[] = [
-  {
-    key: '1',
-    firstName: 'John',
-    lastName: 'Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-  },
-  {
-    key: '2',
-    firstName: 'Jim',
-    lastName: 'Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    firstName: 'Joe',
-    lastName: 'Black',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-];
+  useEffect(() => {
+    dispatch(fetchEmployees());
+  }, [dispatch]);
 
-const ManageEmployees: React.FC = () => (
-  <Table<DataType> dataSource={data}>
-    <ColumnGroup title="Name">
-      <Column title="First Name" dataIndex="firstName" key="firstName" />
-      <Column title="Last Name" dataIndex="lastName" key="lastName" />
-    </ColumnGroup>
-    <Column title="Age" dataIndex="age" key="age" />
-    <Column title="Address" dataIndex="address" key="address" />
-    <Column
-      title="Tags"
-      dataIndex="tags"
-      key="tags"
-      render={(tags: string[]) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
-              color = 'volcano';
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      )}
-    />
-    <Column
-      title="Action"
-      key="action"
-      render={(_: any, record: DataType) => (
-        <Space size="middle">
-          <a>Invite {record.lastName}</a>
-          <a>Delete</a>
-        </Space>
-      )}
-    />
-  </Table>
-);
+  const handleDelete = (id: number) => {
+    dispatch(removeEmployee(id));
+  };
+
+  const handleEdit = (id: number) => {
+    // TODO: mở modal hoặc điều hướng sang trang Edit Employee
+    console.log("Edit employee:", id);
+  };
+
+  return (
+    <Table<Employee> dataSource={employees} rowKey="id">
+      <Column title="Code" dataIndex="employeeCode" key="employeeCode" />
+      <Column title="Full Name" dataIndex="fullName" key="fullName" />
+      <Column title="Phone" dataIndex="phone" key="phone" />
+      <Column title="Email" dataIndex="email" key="email" />
+      <Column title="Job Title" dataIndex="jobTitle" key="jobTitle" />
+      <Column
+        title="Status"
+        dataIndex="status"
+        key="status"
+        render={(status: string) => (
+          <Tag color={status === "active" ? "green" : status === "inactive" ? "orange" : "red"}>
+            {status.toUpperCase()}
+          </Tag>
+        )}
+      />
+      <Column
+        title="Actions"
+        key="actions"
+        render={(_, record: Employee) => (
+          <Space size="middle">
+            <Button type="link" onClick={() => handleEdit(record.id)}>
+              Edit
+            </Button>
+            <Button danger type="link" onClick={() => handleDelete(record.id)}>
+              Delete
+            </Button>
+          </Space>
+        )}
+      />
+    </Table>
+  );
+};
 
 export default ManageEmployees;
