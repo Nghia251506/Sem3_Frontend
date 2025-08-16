@@ -10,8 +10,16 @@ export interface Employee {
 
 
 export interface EmployeeCreateDto {
-  name: string;
-  position: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  address: string;
   email: string;
+  education: string;
+  departmentId : number;
+  gradeId: number;
   phone: string;
+  jobTitle: string;
+  dateOfJoin: Date;
+  status: "active" | "inactive" | "suspended";
 }

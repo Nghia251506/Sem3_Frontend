@@ -1,7 +1,7 @@
 import axiosClient from "../data/axios";
 import { Employee, EmployeeCreateDto } from "../types/Employee";
 
-const EMPLOYEE_URL = "/employees";
+const EMPLOYEE_URL = "/employee";
 
 export const getAllEmployees = async (): Promise<Employee[]> => {
   return await axiosClient.get(`${EMPLOYEE_URL}/getall`);
