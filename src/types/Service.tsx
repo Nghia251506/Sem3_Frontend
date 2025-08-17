@@ -7,7 +7,6 @@ export interface Service {
 }
 
 export interface ServiceCreateDto {
-    id: number,
     code: string,
     name: string,
     division: 'MannedGuarding' | 'CashServices' | 'RecruitmentTraining' | 'ElectronicSecurity',
