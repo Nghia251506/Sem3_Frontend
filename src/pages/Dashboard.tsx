@@ -1,10 +1,11 @@
 // import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { User, MapPin, Phone, GraduationCap, Award, Building, Users, Calendar } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   const { currentUser } = useAuth();
-
+  // console.log(currentUser);
   if (!currentUser) return null;
 
   return (
@@ -17,13 +18,13 @@ const Dashboard = () => {
               <User className="h-8 w-8 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Welcome, {currentUser.name}</h1>
-              <p className="text-gray-600">{currentUser.role} - {currentUser.department}</p>
-              {currentUser.isAdmin && (
+              <h1 className="text-2xl font-bold text-gray-900">Welcome, {currentUser.employeeName}</h1>
+              <p className="text-gray-600">{currentUser.username} - {currentUser.employeeCode}</p>
+              
                 <span className="inline-block bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full mt-2">
-                  Administrator
+                  {currentUser.roleName}
                 </span>
-              )}
+              
             </div>
           </div>
         </div>
@@ -48,7 +49,7 @@ const Dashboard = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
                     <div className="flex items-center space-x-2">
                       <Building className="h-5 w-5 text-gray-400" />
-                      <span className="text-gray-900">{currentUser.department}</span>
+                      <span className="text-gray-900">{currentUser.employeeDepartment}</span>
                     </div>
                   </div>
                   
@@ -56,7 +57,7 @@ const Dashboard = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
                     <div className="flex items-center space-x-2">
                       <Users className="h-5 w-5 text-gray-400" />
-                      <span className="text-gray-900">{currentUser.role}</span>
+                      <span className="text-gray-900">{currentUser.roleName}</span>
                     </div>
                   </div>
                   
@@ -64,7 +65,7 @@ const Dashboard = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
                     <div className="flex items-center space-x-2">
                       <Award className="h-5 w-5 text-gray-400" />
-                      <span className="text-gray-900">{currentUser.grade}</span>
+                      <span className="text-gray-900">{currentUser.employeeGrade}</span>
                     </div>
                   </div>
                 </div>
@@ -74,7 +75,7 @@ const Dashboard = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Contact Number</label>
                     <div className="flex items-center space-x-2">
                       <Phone className="h-5 w-5 text-gray-400" />
-                      <span className="text-gray-900">{currentUser.contact}</span>
+                      <span className="text-gray-900">{currentUser.employeePhone}</span>
                     </div>
                   </div>
                   
@@ -82,7 +83,7 @@ const Dashboard = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
                     <div className="flex items-start space-x-2">
                       <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
-                      <span className="text-gray-900">{currentUser.address}</span>
+                      <span className="text-gray-900">{currentUser.employeeAddress}</span>
                     </div>
                   </div>
                   
@@ -90,7 +91,7 @@ const Dashboard = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Education</label>
                     <div className="flex items-center space-x-2">
                       <GraduationCap className="h-5 w-5 text-gray-400" />
-                      <span className="text-gray-900">{currentUser.education}</span>
+                      <span className="text-gray-900">{currentUser.employeeEducation}</span>
                     </div>
                   </div>
                   
@@ -98,18 +99,11 @@ const Dashboard = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Current Client</label>
                     <div className="flex items-center space-x-2">
                       <Building className="h-5 w-5 text-gray-400" />
-                      <span className="text-gray-900">{currentUser.client}</span>
+                      <span className="text-gray-900">{currentUser.employeeJobTitle}</span>
                     </div>
                   </div>
                 </div>
               </div>
-              
-              {currentUser.achievements && (
-                <div className="mt-6 p-4 bg-green-50 rounded-lg">
-                  <h3 className="font-medium text-green-900 mb-2">Achievements</h3>
-                  <p className="text-green-800">{currentUser.achievements}</p>
-                </div>
-              )}
             </div>
           </div>
 
@@ -164,9 +158,9 @@ const Dashboard = () => {
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Admin Actions</h3>
                 <div className="space-y-2">
-                  <button className="w-full text-left px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded">
+                  <Link className="w-full text-left px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded" to={"/admin/employees"}>
                     Manage Employees
-                  </button>
+                  </Link>
                   <button className="w-full text-left px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded">
                     Update Services
                   </button>

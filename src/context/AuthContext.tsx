@@ -1,6 +1,5 @@
-// AuthContext.tsx
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 interface AuthContextType {
   currentUser: JWTPayload | null;
@@ -22,13 +21,21 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// JWT payload (chỉnh theo backend trả về)
 interface JWTPayload {
-  sub: string;       // userId
+  sub: string;
+  employeeCode: string;
+  employeeName: string;
+  employeeDepartment: string;
+  employeeGrade: string;
+  employeePhone: string;
+  employeeAddress: string;
+  employeeEducation: string;
+  employeeJobTitle: string;
+  phone: string;
   username: string;
   roleId: number;
   roleName: string;
-  isAdmin: boolean;
+  isAdmin: boolean | string;   // 👈 có thể về "True"/"False"
   exp: number;
 }
 
@@ -41,11 +48,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (token) {
       try {
         const decoded: JWTPayload = jwtDecode(token);
+
         if (decoded.exp * 1000 > Date.now()) {
-          setCurrentUser(decoded);
-          setIsAdmin(decoded.roleName === "admin"); // hoặc decoded.roleId === 1
+          // ép kiểu về boolean chuẩn
+          const adminFlag = decoded.isAdmin === true || decoded.isAdmin === "True" || decoded.roleId === 1;
+
+          setCurrentUser({ ...decoded, isAdmin: adminFlag });
+          setIsAdmin(adminFlag);
         } else {
-          logout(); // token hết hạn
+          logout();
         }
       } catch (err) {
         console.error("Invalid token", err);
@@ -54,44 +65,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [token]);
 
-  useEffect(() => {
-  if (token) {
-    try {
-      const decoded: JWTPayload = jwtDecode(token);
-      console.log("Decoded token:", decoded);  // <--- xem toàn bộ payload
-      console.log("isAdmin value:", decoded.isAdmin); // <--- check isAdmin
-      if (decoded.exp * 1000 > Date.now()) {
-        setCurrentUser(decoded);
-      } else {
-        logout();
-      }
-    } catch (err) {
-      console.error("Invalid token", err);
-      logout();
-    }
-  }
-}, [token]);
-
   const login = async (username: string, password: string): Promise<boolean> => {
     try {
       const res = await fetch("http://localhost:5220/api/User/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, passwordHash: password }) // gửi password bình thường
+        body: JSON.stringify({ username, passwordHash: password })
       });
 
       if (!res.ok) return false;
 
       const data = await res.json();
-      // console.log(data)
-      // data = { token: string, user: { ... } }
       localStorage.setItem("token", data.token);
       setToken(data.token);
 
       const decoded: JWTPayload = jwtDecode(data.token);
-      const isAdmin = decoded.roleName === "admin" // check role
-      setCurrentUser({...decoded, isAdmin});
-      
+      const adminFlag = decoded.isAdmin === true || decoded.isAdmin === "True" || decoded.roleId === 1;
+
+      setCurrentUser({ ...decoded, isAdmin: adminFlag });
+      setIsAdmin(adminFlag);
+
       return true;
     } catch (err) {
       console.error("Login failed", err);

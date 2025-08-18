@@ -48,7 +48,7 @@ const Login = () => {
           <Shield className="h-12 w-12 text-blue-600" />
         </div>
         <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-          Employee Login
+          Login
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           Access your employee dashboard

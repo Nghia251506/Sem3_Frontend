@@ -21,14 +21,16 @@ const Header = () => {
 
   const employeeNavItems = [
     { path: '/dashboard', label: 'Dashboard' },
-    { path: '/employees', label: 'Employee Directory' },
+    { path: '/employeedetail', label: 'Employee Directory' },
+    { path: '/jobs', label: 'Jobs' },
     ...(currentUser?.isAdmin ? [
       { path: '/admin/employees', label: 'Manage Employees' },
       { path: '/admin/vacancies', label: 'Manage Vacancies' },
       { path: '/admin/services', label: 'Manage Services' },
-      { path: '/admin/clients', label: 'Manage Clients' }
+      { path: '/admin/clients', label: 'Manage Clients' },
     ] : [])
   ];
+
 
   const navItems = isAuthenticated ? employeeNavItems : publicNavItems;
 
@@ -40,7 +42,8 @@ const Header = () => {
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+        
+          <div className="flex justify-between items-center py-4">
           <Link to="/" className="flex items-center space-x-2">
             <Shield className="h-8 w-8 text-blue-600" />
             <span className="text-2xl font-bold text-gray-900">Star Securities</span>
@@ -85,7 +88,7 @@ const Header = () => {
                 to="/login"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-200 font-medium"
               >
-                Employee Login
+              Login
               </Link>
             )}
           </div>
@@ -143,6 +146,7 @@ const Header = () => {
             </div>
           </div>
         )}
+        
       </div>
     </header>
   );

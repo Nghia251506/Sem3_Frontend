@@ -6,7 +6,7 @@ export type FieldType = {
   name: string;
   label: string;
   type?: "text" | "email" | "select" | "date";
-  options?: { label: string; value: string }[];
+  options?: { label: string; value: string | number }[];
   rules?: any[];
   disabled?: boolean; // sửa lại từ disable -> disabled
 };
@@ -20,6 +20,8 @@ interface CommonModalProps {
   fields: FieldType[];
   initialValues?: any;
 }
+
+const {Option} = Select;
 
 const CommonModal: React.FC<CommonModalProps> = ({
   visible,
@@ -83,17 +85,17 @@ const CommonModal: React.FC<CommonModalProps> = ({
             rules={field.rules}
           >
             {field.type === "select" ? (
-              <Select disabled={field.disabled}>
-                {field.options?.map((opt) => (
-                  <Select.Option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </Select.Option>
-                ))}
-              </Select>
+              <Select
+                placeholder={`Select ${field.label}`}
+                options={field.options?.map((opt) => ({
+                  label: opt.label,
+                  value: opt.value,
+                }))}
+              />
             ) : field.type === "date" ? (
               <DatePicker style={{ width: "100%" }} disabled={field.disabled} />
             ) : (
-              <Input type={field.type || "text"} disabled={field.disabled} />
+              <Input type={field.type || "text"} disabled={field.disabled}/>
             )}
           </Form.Item>
         ))}
