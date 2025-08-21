@@ -45,7 +45,8 @@ const Login = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <Shield className="h-12 w-12 text-blue-600" />
+            <img srcSet='https://static.wixstatic.com/media/087044_ff80b35095994e088a39204a11a185ed~mv2.jpg/v1/fill/w_97,h_79,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/black%20star.jpg%201x,%20https://static.wixstatic.com/media/087044_ff80b35095994e088a39204a11a185ed~mv2.jpg/v1/fill/w_194,h_159,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/black%20star.jpg%202x' className="h-16 w-16 text-blue-600" />
+
         </div>
         <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
           Login
@@ -135,13 +136,7 @@ const Login = () => {
               </div>
             </div>
 
-            <div className="mt-6 bg-gray-50 p-4 rounded-md">
-              <p className="text-sm text-gray-600 mb-2">Use these credentials to test the system:</p>
-              <div className="space-y-1 text-sm">
-                <p><strong>Employee:</strong> rajesh@starsecurity.com / password123</p>
-                <p><strong>Admin:</strong> priya@starsecurity.com / password123</p>
-              </div>
-            </div>
+            
           </div>
 
           <div className="mt-6 text-center">
