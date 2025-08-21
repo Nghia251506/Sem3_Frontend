@@ -1,11 +1,20 @@
 export interface Employee {
   id: number;
   employeeCode: string;
+  firstName: string;
+  lastName: string;
   fullName: string;
+  address: string;
   phone: string;
   email: string;
   jobTitle: string;
+  deateOfJoin: Date;
   status: "active" | "inactive" | "suspended";
+  departmentName?: string;
+  departmentId: number;
+  gradeName?: string;
+  gradeId: number;
+  education?: string;
 }
 
 

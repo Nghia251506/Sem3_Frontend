@@ -7,8 +7,16 @@ import {
   removeEmployee,
   addEmployee,
   editEmployee,
+  fetchEmployeeById
 } from "../redux/employeeSlice";
+import {
+  fetDepartmentById,
+  fetchDepartments
+} from "../redux/deparmentSlice"
+import { fetchGrades } from "../redux/gradeSlice";
 import { Employee } from "../types/Employee";
+import { Department } from "../types/Department";
+import { Grade } from "../types/Grade";
 import CommonModal, { FieldType } from "../Common/Modal";
 import { message } from "antd";
 
@@ -17,6 +25,8 @@ const { Column } = Table;
 const ManageEmployees: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const employees = useSelector((state: RootState) => state.employees.items);
+  const departments = useSelector((state: RootState) => state.departments);
+  const grades = useSelector((state: RootState) => state.grades);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
@@ -25,14 +35,42 @@ const ManageEmployees: React.FC = () => {
     dispatch(fetchEmployees());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(fetchGrades())
+  }, [dispatch])
+
   const handleAdd = () => {
     setEditingEmployee(null);
     setModalVisible(true);
   };
 
-  const handleEdit = (employee: Employee) => {
-    setEditingEmployee(employee);
+  useEffect(() => {
+    dispatch(fetchDepartments()); // gọi API khi load trang
+  }, [dispatch]);
+
+  const departmentOptions = departments.items?.map((dep: Department) => ({
+    label: dep.name,
+    value: dep.id,   // dùng id để submit
+  }));
+
+  const gradeOptions = grades.items?.map((gd: Grade) => ({
+    label: gd.name,
+    value: gd.id,
+  }))
+
+  const handleEdit = async (employee: Employee) => {
+    try {
+    // gọi API để lấy detail từ backend
+    const fullEmployee = await dispatch(fetchEmployeeById(employee.id)).unwrap();
+
+    // lưu vào state local để hiển thị trong form
+    setEditingEmployee(fullEmployee);
+
+    // mở modal
     setModalVisible(true);
+  } catch (error) {
+    console.error("Failed to fetch employee detail:", error);
+  }
   };
 
   const handleSubmit = (values: any) => {
@@ -53,8 +91,18 @@ const ManageEmployees: React.FC = () => {
     { name: "phone", label: "Phone",rules: [{ required: true }], type: "text" },
     { name: "email", label: "Email",rules: [{ required: true }], type: "email" },
     { name: "education", label: "Education",rules: [{ required: false }], type: "text" },
-    { name: "departmentId", label: "Department",rules: [{ required: false }], type: "text" },
-    { name: "gradeId", label: "Grade",rules: [{ required: false }], type: "text" },
+    { name: "departmentId", 
+      label: "Department",
+      rules: [{ required: false }], 
+      type: "select",
+      options: departmentOptions,
+    },
+    { name: "gradeId", 
+      label: "Grade",
+      rules: [{ required: false }], 
+      type: "select", 
+      options: gradeOptions,
+    },
     { name: "jobTitle", label: "Job Title", type: "text" },
     { name: "dateOfJoin", label: "Date Of Join", type: "date" },
     {
@@ -78,11 +126,12 @@ const ManageEmployees: React.FC = () => {
 
   return (
     <>
+    <h1 className="text-center text-2xl font-bold">List Employee</h1>
       <Button type="primary" onClick={handleAdd} style={{ marginBottom: 16 }}>
         Add Employee
       </Button>
 
-      <Table<Employee> dataSource={employees} rowKey="id">
+      <Table<Employee> dataSource={employees} rowKey="id" pagination={{ pageSize: 5 }}>
         <Column title="Code" dataIndex="employeeCode" key="employeeCode" />
         <Column title="Full Name" dataIndex="fullName" key="fullName" />
         <Column title="Phone" dataIndex="phone" key="phone" />

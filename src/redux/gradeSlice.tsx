@@ -1,19 +1,15 @@
 import { createSlice, createAsyncThunk, PayloadAction  } from "@reduxjs/toolkit";
-import { Service, ServiceCreateDto } from "../types/Service";
-import 
-{
-    getAllService,
-    createService
-}from "../services/serivceService"
+import { Grade } from "../types/Grade";
+import { getAllGrade } from "../services/gradeService";
 
-interface ServiceState {
-    items: Service[];
-    selected?: Service | null;
+interface GradeState {
+    items: Grade[];
+    selected?: Grade | null;
     loading: boolean;
-    error: string | null;
+    error: string | null
 }
 
-const initialState: ServiceState = {
+const initialState: GradeState = {
     items: [],
     selected: null,
     loading: false,
@@ -21,25 +17,26 @@ const initialState: ServiceState = {
 };
 
 //thunk
-export const fetchServices = createAsyncThunk("service/fetchAll", async () => {
-    return await getAllService();
+
+export const fetchGrades = createAsyncThunk("grade/fetchAll", async () => {
+    return await getAllGrade();
 });
 
-const serviceSlice = createSlice({
-  name: "services",
+const gradeSlice = createSlice({
+  name: "grades",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
       // fetchAll
-      .addCase(fetchServices.pending, (state) => {
+      .addCase(fetchGrades.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchServices.fulfilled, (state, action: PayloadAction<Service[]>) => {
+      .addCase(fetchGrades.fulfilled, (state, action: PayloadAction<Grade[]>) => {
         state.loading = false;
         state.items = action.payload;
       })
-      .addCase(fetchServices.rejected, (state, action) => {
+      .addCase(fetchGrades.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message ?? "Fetch employees failed";
       })
@@ -67,4 +64,4 @@ const serviceSlice = createSlice({
   },
 });
 
-export default serviceSlice.reducer;
+export default gradeSlice.reducer;
