@@ -3,6 +3,7 @@ import employeeReducer from "./employeeSlice";
 import departmentReducer from "./deparmentSlice";
 import gradeReducer from "./gradeSlice"
 import serviceReducer from "./serviceSlice"
+import aboutusReducer from "./aboutUsSlice"
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     departments: departmentReducer,
     grades: gradeReducer,
     services: serviceReducer,
+    aboutuses: aboutusReducer,
   },
 });
 

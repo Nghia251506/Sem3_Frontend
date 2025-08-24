@@ -45,7 +45,7 @@ const Header = () => {
         
           <div className="flex justify-between items-center py-4">
           <Link to="/" className="flex items-center space-x-2">
-            <Shield className="h-8 w-8 text-blue-600" />
+            <img srcSet='https://static.wixstatic.com/media/087044_ff80b35095994e088a39204a11a185ed~mv2.jpg/v1/fill/w_97,h_79,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/black%20star.jpg%201x,%20https://static.wixstatic.com/media/087044_ff80b35095994e088a39204a11a185ed~mv2.jpg/v1/fill/w_194,h_159,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/black%20star.jpg%202x' className="h-16 w-16 text-blue-600" />
             <span className="text-2xl font-bold text-gray-900">Star Securities</span>
           </Link>
 
