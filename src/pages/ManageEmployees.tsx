@@ -10,7 +10,6 @@ import {
   fetchEmployeeById
 } from "../redux/employeeSlice";
 import {
-  fetDepartmentById,
   fetchDepartments
 } from "../redux/deparmentSlice"
 import { fetchGrades } from "../redux/gradeSlice";

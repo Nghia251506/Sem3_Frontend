@@ -5,6 +5,15 @@ export interface Service{
     name: string;
     division: string;
     description: string;
+    // servicesPackages: [];
+}
+
+export interface ServicePackage {
+  id: number;
+  packageName: string;
+  staffRange: string;
+  price: number;
+  note?: string;
 }
 
 export interface ServiceCreateDto{
@@ -12,4 +21,8 @@ export interface ServiceCreateDto{
     name: string;
     division: string;
     description: string;
+}
+
+export interface ServiceDetail extends Service {
+  packages: [];
 }
