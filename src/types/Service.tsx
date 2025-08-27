@@ -8,14 +8,6 @@ export interface Service{
     // servicesPackages: [];
 }
 
-export interface ServicePackage {
-  id: number;
-  packageName: string;
-  staffRange: string;
-  price: number;
-  note?: string;
-}
-
 export interface ServiceCreateDto{
     code: string;
     name: string;
