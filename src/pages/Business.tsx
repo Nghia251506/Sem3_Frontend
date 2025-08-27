@@ -33,11 +33,36 @@ const Business = () => {
 
   // console.log(selectedService);
   const columns = [
-    { title: "Gói dịch vụ", dataIndex: "packageName", key: "packageName" },
-    { title: "Nhân sự", dataIndex: "staffRange", key: "staffRange" },
-    { title: "Giá", dataIndex: "price", key: "price" },
-    { title: "Ghi chú", dataIndex: "note", key: "note" },
-  ];
+  {
+    title: "Service Package",
+    dataIndex: "packageName",
+    key: "packageName",
+    render: (text: string) => {
+      let colorClass = "text-gray-800"; // màu mặc định
+
+      if (text.toLowerCase().includes("bạc")) colorClass = "text-gray-400"; // bạc
+      else if (text.toLowerCase().includes("vàng")) colorClass = "text-yellow-500"; // vàng
+      else if (text.toLowerCase().includes("kim cương")) colorClass = "text-blue-600"; // kim cương
+
+      return <span className={`${colorClass} font-bold`}>{text}</span>;
+    },
+  },
+  { title: "Personnel", dataIndex: "staffRange", key: "staffRange" },
+  { title: "Price", dataIndex: "price", key: "price",  render: (price: number) => `${price}$` },
+  { title: "Note", dataIndex: "note", key: "note" },
+  {
+    title: "Action",
+    key: "action",
+    render: (_: any, record: any) => (
+      <button
+        className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+        // onClick={}
+      >
+        Apply
+      </button>
+    ),
+  },
+];
 
 // console.log(selectedService)
   return (
@@ -111,9 +136,9 @@ const Business = () => {
         onClose={() => setModalVisible(false)}
         title={selectedService?.name}
       >
-        <p><b>Mô tả:</b> {selectedService?.description}</p>
+        <p><b>Description:</b> {selectedService?.description}</p>
 
-        <h3 className="mt-4 mb-2 font-semibold">Bảng giá</h3>
+        <h3 className="mt-4 mb-2 font-semibold">Price list</h3>
         <Table
           dataSource={selectedService?.packages || []}
           columns={columns}
