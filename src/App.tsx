@@ -16,6 +16,8 @@ import Dashboard from './pages/Dashboard';
 import ManageEmployees from './pages/ManageEmployees';
 import EmployeeDirectory from './pages/EmployeeDirectory';
 import Service from './pages/Service';
+import ContactUs from './pages/Contact';
+import FloatingContact from './components/FloatingContact';
 
 function App() {
   return (
@@ -32,7 +34,7 @@ function App() {
               <Route path="/network" element={<Network />} />
               <Route path="/careers" element={<Careers />} />
               <Route path="/clients" element={<Clients />} />
-              {/* <Route path="/contact" element={<ContaceUs/>} /> */}
+              <Route path="/contact" element={<ContactUs/>} />
               <Route path="/login" element={<Login />} />
               
               {/* Protected Routes */}
@@ -49,6 +51,7 @@ function App() {
               <Route path='/employeedetail' element={<EmployeeDirectory/>}/>
               <Route path='/admin/services' element={<Service/>}/>
             </Routes>
+            <FloatingContact/>
           </main>
           <Footer />
         </div>
