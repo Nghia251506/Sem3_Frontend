@@ -5,6 +5,7 @@ export interface Service{
     name: string;
     division: string;
     description: string;
+    // servicesPackages: [];
 }
 
 export interface ServiceCreateDto{
@@ -12,4 +13,8 @@ export interface ServiceCreateDto{
     name: string;
     division: string;
     description: string;
+}
+
+export interface ServiceDetail extends Service {
+  packages: [];
 }
