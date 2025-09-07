@@ -5,6 +5,8 @@ import { fetchServices, fetchServiceById } from "../redux/serviceSlice";
 import type { RootState, AppDispatch } from "../redux/store";
 import ModalDetail from "../Common/ModalDetail";
 import { Table } from "antd";
+import { setSelectedPackage } from "../redux/servicePackageSlice";
+import { useNavigate, Link } from "react-router-dom";
 
 const serviceIcons = {
   "Manned Guarding": Shield,
@@ -54,12 +56,16 @@ const Business = () => {
     title: "Action",
     key: "action",
     render: (_: any, record: any) => (
-      <button
-        className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-        // onClick={}
-      >
-        Apply
-      </button>
+      <Link to="/contact"
+          onClick={() => {
+            dispatch(setSelectedPackage(record));
+          }}>
+        <button
+          className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+        >
+          Apply
+        </button>
+      </Link>
     ),
   },
 ];

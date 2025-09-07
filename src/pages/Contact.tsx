@@ -1,19 +1,64 @@
-import React from "react";
-import { Phone, Mail, Facebook, MessageCircle, MapPin } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Phone, Mail, Facebook, MessageCircle, MapPin, MessageCircleCode } from "lucide-react";
+import { RootState, AppDispatch } from "../redux/store";
+import ModalDetail from "../Common/ModalDetail";
+import {addRequest} from "../redux/serviceRequestSlice";
 
 const ContactUs: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  // const selectedPackage = useSelector((state: RootState) => state.servicePackage.selectedPackage);
+  // console.log(selectedPackage.id)
+  const [modalVisible, setModalVisible] = useState(false);
+  const [formRequest, setFormRequest] = useState<any>({})
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    address: "",
+    phone: "",
+    serviceId: null,
+    status: "pending",
+    detail: ""
+  });
+
+   const handleChange = (e: { target: { name: any; value: any; }; }) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = (event: { preventDefault: () => void; }) =>  {
+    console.log('vào đây rồi')
+    console.log(formData);
+    setFormRequest(formData)
+    setModalVisible(true);
+    event.preventDefault();
+  }
+
+  const handleCreate = () => {
+    console.log("--------------------")
+    console.log(formRequest);
+    dispatch(addRequest(formRequest))
+    setModalVisible(false);
+  }
+  
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
       <div className="max-w-6xl w-full bg-white rounded-2xl shadow-lg grid grid-cols-1 md:grid-cols-2 overflow-hidden">
         {/* Form bên trái */}
         <div className="p-8">
           <h2 className="text-2xl font-bold text-blue-600 mb-6">Contact us</h2>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
               <label className="block text-gray-700">Full name</label>
               <input
                 type="text"
-                placeholder="Nhập họ tên..."
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Your name"
                 className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-400"
               />
             </div>
@@ -21,7 +66,10 @@ const ContactUs: React.FC = () => {
               <label className="block text-gray-700">Email</label>
               <input
                 type="email"
-                placeholder="Nhập email..."
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Your email..."
                 className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-400"
               />
             </div>
@@ -29,14 +77,20 @@ const ContactUs: React.FC = () => {
               <label className="block text-gray-700">Phone</label>
               <input
                 type="tel"
-                placeholder="Nhập số điện thoại..."
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="Your phone number"
                 className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-400"
               />
             </div>
             <div>
               <label className="block text-gray-700">Content</label>
               <textarea
-                placeholder="Nhập nội dung..."
+                name="detail"
+                value={formData.detail}
+                onChange={handleChange}
+                placeholder="Description"
                 rows={4}
                 className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-400"
               />
@@ -74,7 +128,7 @@ const ContactUs: React.FC = () => {
                 <Phone />
               </a>
               <a href="https://zalo.me/" className="bg-white text-blue-600 p-3 rounded-full hover:bg-gray-200">
-                <MessageCircle />
+                <MessageCircleCode />
               </a>
               <a href="https://m.me/yourpage" className="bg-white text-blue-600 p-3 rounded-full hover:bg-gray-200">
                 <MessageCircle />
@@ -97,6 +151,19 @@ const ContactUs: React.FC = () => {
           </div>
         </div>
       </div>
+      <ModalDetail
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        title="Payment"
+      >
+        <img src="/payment.jpg" alt="" />
+        <button
+          onClick={handleCreate}
+          className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+        >
+          Accept
+        </button>
+      </ModalDetail>
     </div>
   );
 };
