@@ -10,7 +10,6 @@ import About from './pages/About';
 import Business from './pages/Business';
 import Network from './pages/Network';
 import Careers from './pages/Careers';
-import Clients from './pages/Clients';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ManageEmployees from './pages/ManageEmployees';
@@ -33,7 +32,6 @@ function App() {
               <Route path="/business" element={<Business />} />
               <Route path="/network" element={<Network />} />
               <Route path="/careers" element={<Careers />} />
-              <Route path="/clients" element={<Clients />} />
               <Route path="/contact" element={<ContactUs/>} />
               <Route path="/login" element={<Login />} />
               
