@@ -5,6 +5,7 @@ import gradeReducer from "./gradeSlice"
 import serviceReducer from "./serviceSlice"
 import aboutusReducer from "./aboutUsSlice"
 import servicePackageSlice from "./servicePackageSlice"
+import serviceRequestReducer from "./serviceRequestSlice"
 
 export const store = configureStore({
   reducer: {
@@ -13,7 +14,8 @@ export const store = configureStore({
     grades: gradeReducer,
     services: serviceReducer,
     aboutuses: aboutusReducer,
-    servicePackage: servicePackageSlice
+    servicePackage: servicePackageSlice,
+    servicerequests: serviceRequestReducer,
   },
 });
 

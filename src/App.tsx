@@ -17,6 +17,7 @@ import EmployeeDirectory from './pages/EmployeeDirectory';
 import Service from './pages/Service';
 import ContactUs from './pages/Contact';
 import FloatingContact from './components/FloatingContact';
+import Register from './pages/Register';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
               <Route path="/careers" element={<Careers />} />
               <Route path="/contact" element={<ContactUs/>} />
               <Route path="/login" element={<Login />} />
+              <Route path='/register' element={<Register/>}/>
               
               {/* Protected Routes */}
               <Route 

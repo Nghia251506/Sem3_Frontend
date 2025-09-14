@@ -7,7 +7,10 @@ export interface Employee {
   address: string;
   phone: string;
   email: string;
-  jobTitle: string;
+  jobId: number;
+  serviceId: number;
+  jobName?: string;
+  serviceName?: string;
   deateOfJoin: Date;
   status: "active" | "inactive" | "suspended";
   departmentName?: string;
@@ -25,6 +28,8 @@ export interface EmployeeCreateDto {
   address: string;
   email: string;
   education: string;
+  jobId: number;
+  serviceId: number;
   departmentId : number;
   gradeId: number;
   phone: string;

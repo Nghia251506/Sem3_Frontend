@@ -48,7 +48,7 @@ export const removeRequest = createAsyncThunk("request/remove", async (id: numbe
 })
 
 const serviceRequestSlice = createSlice({
-  name: "services",
+  name: "servicerequests",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -88,3 +88,5 @@ const serviceRequestSlice = createSlice({
       });
   },
 });
+
+export default serviceRequestSlice.reducer
