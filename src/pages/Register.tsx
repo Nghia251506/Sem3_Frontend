@@ -4,7 +4,7 @@ import { AppDispatch } from "../redux/store";
 import { addUser } from "../redux/userSlice";
 import { UserCreateDto } from "../types/User";
 import { useNavigate } from "react-router-dom";
-import { message } from "antd";   // ✅ import từ antd
+import { message } from "antd";
 import { Link } from "react-router-dom";
 
 const Register = () => {
@@ -14,10 +14,15 @@ const Register = () => {
 
     const [form, setForm] = useState<UserCreateDto>({
         username: "",
-        passwordHash: "",
+        password_hash: "",
         employeeId: 0,
-        authRoleId: 2
+        authRoleId: 2,
+        fullName: "",
+        phone: "",
+        email: ""
     });
+
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,13 +30,18 @@ const Register = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (form.password_hash !== confirmPassword) {
+            message.error("Confirmation password does not match!");
+            return;
+        }
+
         setLoading(true);
         try {
             await dispatch(addUser(form)).unwrap();
-            message.success("Đăng ký thành công! Chuyển về trang đăng nhập...");
+            message.success("Registered successfully! Go back to login page...");
             setTimeout(() => navigate("/login"), 1000);
         } catch (err) {
-            message.error("Đăng ký thất bại. Vui lòng thử lại!");
+            message.error("Registration failed. Please try again!");
         } finally {
             setLoading(false);
         }
@@ -41,7 +51,10 @@ const Register = () => {
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="flex justify-center">
-                    <img srcSet='https://static.wixstatic.com/media/087044_ff80b35095994e088a39204a11a185ed~mv2.jpg/v1/fill/w_97,h_79,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/black%20star.jpg%201x,%20https://static.wixstatic.com/media/087044_ff80b35095994e088a39204a11a185ed~mv2.jpg/v1/fill/w_194,h_159,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/black%20star.jpg%202x' className="h-16 w-16 text-blue-600" />
+                    <img
+                        src="https://static.wixstatic.com/media/087044_ff80b35095994e088a39204a11a185ed~mv2.jpg"
+                        className="h-16 w-16 text-blue-600"
+                    />
                 </div>
                 <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
                     Register
@@ -50,7 +63,34 @@ const Register = () => {
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    <form className="space-y-6" onSubmit={handleSubmit}>
+                    <form className="space-y-4" onSubmit={handleSubmit}>
+                        <input
+                            type="text"
+                            name="fullName"
+                            placeholder="Full Name"
+                            value={form.fullName}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 border rounded-md"
+                            required
+                        />
+
+                        <input
+                            type="text"
+                            name="phone"
+                            placeholder="Phone"
+                            value={form.phone}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 border rounded-md"
+                        />
+
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            value={form.email}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 border rounded-md"
+                        />
                         <input
                             type="text"
                             name="username"
@@ -60,12 +100,23 @@ const Register = () => {
                             className="w-full px-3 py-2 border rounded-md"
                             required
                         />
+
                         <input
                             type="password"
-                            name="passwordHash"
+                            name="password_hash"
                             placeholder="Password"
-                            value={form.passwordHash}
+                            value={form.password_hash}
                             onChange={handleChange}
+                            className="w-full px-3 py-2 border rounded-md"
+                            required
+                        />
+
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            placeholder="Confirm Password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                             className="w-full px-3 py-2 border rounded-md"
                             required
                         />
@@ -78,8 +129,14 @@ const Register = () => {
                             {loading ? "Registering..." : "Register"}
                         </button>
                     </form>
+
                     <div className="mt-6 text-center">
-                        <Link to="/" className="text-sm text-blue-600 hover:text-blue-500" > ← Back to home </Link>
+                        <Link
+                            to="/"
+                            className="text-sm text-blue-600 hover:text-blue-500"
+                        >
+                            ← Back to home
+                        </Link>
                     </div>
                 </div>
             </div>
