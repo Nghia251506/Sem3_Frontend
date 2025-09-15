@@ -18,6 +18,7 @@ import Service from './pages/Service';
 import ContactUs from './pages/Contact';
 import FloatingContact from './components/FloatingContact';
 import Register from './pages/Register';
+import JobListPage from './pages/Job';
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
               <Route path='/admin/employeedetail' element={<EmployeeDirectory/>}/>
               <Route path='/employeedetail' element={<EmployeeDirectory/>}/>
               <Route path='/admin/services' element={<Service/>}/>
+              <Route path='/jobs' element={<JobListPage/>}/>
             </Routes>
             <FloatingContact/>
           </main>

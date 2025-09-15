@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { Navigate, useNavigate, Link } from 'react-router-dom';
 import { Shield, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -13,39 +13,47 @@ const Login = () => {
 
   const { login, isAuthenticated, currentUser } = useAuth();
 
-  if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError('');
-  setIsLoading(true);
-
-  try {
-    const success = await login(username, password); // thêm await
-    if (!success) {
-      setError('Invalid email or password. Please try again.');
-    } else {
-      // redirect ngay sau khi login thành công
-      if (currentUser?.isAdmin) {
-        navigate('/admin'); // admin layout
-      } else {
-        navigate('/employee'); // employee layout
-      }
+  if (isAuthenticated && currentUser) {
+    if (currentUser.isAdmin || currentUser.roleName === "Admin") {
+      return <Navigate to="/admin" replace />;
     }
-  } catch (err) {
-    setError('An error occurred. Please try again later.');
-  } finally {
-    setIsLoading(false);
+    if (currentUser.roleName === "Employee") {
+      return <Navigate to="/dashboard" replace />;
+    }
+    // Client mặc định về home
+    return <Navigate to="/" replace />;
   }
-};
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    try {
+      const success = await login(username, password);
+      if (!success) {
+        setError('Invalid email or password. Please try again.');
+      } else if (currentUser) {
+        if (currentUser.isAdmin || currentUser.roleName === "Admin") {
+          navigate('/admin');
+        } else if (currentUser.roleName === "Employee") {
+          navigate('/dashboard');
+        } else {
+          navigate('/'); // client
+        }
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-            <img srcSet='https://static.wixstatic.com/media/087044_ff80b35095994e088a39204a11a185ed~mv2.jpg/v1/fill/w_97,h_79,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/black%20star.jpg%201x,%20https://static.wixstatic.com/media/087044_ff80b35095994e088a39204a11a185ed~mv2.jpg/v1/fill/w_194,h_159,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/black%20star.jpg%202x' className="h-16 w-16 text-blue-600" />
+          <img srcSet='https://static.wixstatic.com/media/087044_ff80b35095994e088a39204a11a185ed~mv2.jpg/v1/fill/w_97,h_79,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/black%20star.jpg%201x,%20https://static.wixstatic.com/media/087044_ff80b35095994e088a39204a11a185ed~mv2.jpg/v1/fill/w_194,h_159,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/black%20star.jpg%202x' className="h-16 w-16 text-blue-600" />
 
         </div>
         <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
@@ -136,7 +144,7 @@ const Login = () => {
               </div>
             </div>
 
-            
+
           </div>
 
           <div className="mt-6 text-center">

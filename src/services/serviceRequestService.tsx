@@ -1,10 +1,10 @@
 import axiosClient from "../data/axios";
 import { ServiceRequest, ServiceRequestCreateDto } from "../types/ServiceRequest";
 
-const SERVICE_REQUEST_URL = "/request";
+const SERVICE_REQUEST_URL = "/servicerequest";
 
 export const getAllRequest = async (): Promise<ServiceRequest[]> => {
-  return await axiosClient.get(`${SERVICE_REQUEST_URL}/getall`);
+  return await axiosClient.get(`${SERVICE_REQUEST_URL}`);
 };
 
 export const getRequestById = async (id: number): Promise<ServiceRequest> => {

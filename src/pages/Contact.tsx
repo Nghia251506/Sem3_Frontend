@@ -1,33 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Phone, Mail, Facebook, MessageCircle, MapPin, MessageCircleCode } from "lucide-react";
 import { RootState, AppDispatch } from "../redux/store";
 import ModalDetail from "../Common/ModalDetail";
 import { addRequest } from "../redux/serviceRequestSlice";
+import { fetchServices } from "../redux/serviceSlice"; // ✅ import thunk lấy service từ DB
+import { fetchEmployees } from "../redux/employeeSlice"; // ✅ import thunk lấy employee từ DB
 
 const ContactUs: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  // const selectedPackage = useSelector((state: RootState) => state.servicePackage.selectedPackage);
-  // console.log(selectedPackage.id)
+
   const [modalVisible, setModalVisible] = useState(false);
   const [formRequest, setFormRequest] = useState<any>({});
   const { items: services } = useSelector((state: RootState) => state.services);
-  // const { items: packages } = useSelector((state: RootState) => state.packages);
-  const { items: employees } = useSelector((state: RootState) => state.employees);
+  const employees = useSelector((state: RootState) => state.employees.items);
+
   const [selectedService, setSelectedService] = useState<number | null>(null);
-  const [selectedPackage, setSelectedPackage] = useState<number | null>(null);
   const [selectedEmployee, setSelectedEmployee] = useState<number | null>(null);
+
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+    clientName: "",
+    contactEmail: "",
     address: "",
-    phone: "",
+    contactPhone: "",
     serviceId: null,
+    assignedEmployeeId: null,
     status: "pending",
-    detail: ""
+    requestDetails: "",
+    startDate: "",
+    endDate: "",
   });
 
-  const handleChange = (e: { target: { name: any; value: any; }; }) => {
+  // ✅ Gọi API lấy services + employees khi component mount
+  useEffect(() => {
+    dispatch(fetchServices());
+    dispatch(fetchEmployees());
+  }, [dispatch]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -35,20 +45,25 @@ const ContactUs: React.FC = () => {
     });
   };
 
-  const handleSubmit = (event: { preventDefault: () => void; }) => {
-    console.log('vào đây rồi')
-    console.log(formData);
-    setFormRequest(formData)
-    setModalVisible(true);
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-  }
+    setFormRequest({
+      ...formData,
+      serviceId: selectedService,
+      assignedEmployeeId: selectedEmployee
+    });
+    setModalVisible(true);
+  };
 
   const handleCreate = () => {
-    console.log("--------------------")
-    console.log(formRequest);
-    dispatch(addRequest(formRequest))
+    dispatch(addRequest(formRequest));
     setModalVisible(false);
-  }
+  };
+
+  // ✅ Lọc nhân viên theo service đã chọn
+  const filteredEmployees = selectedService
+    ? employees.filter((emp) => emp.serviceId === selectedService)
+    : [];
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
@@ -61,8 +76,8 @@ const ContactUs: React.FC = () => {
               <label className="block text-gray-700">Full name</label>
               <input
                 type="text"
-                name="name"
-                value={formData.name}
+                name="clientName"
+                value={formData.clientName}
                 onChange={handleChange}
                 placeholder="Your name"
                 className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-400"
@@ -72,8 +87,8 @@ const ContactUs: React.FC = () => {
               <label className="block text-gray-700">Email</label>
               <input
                 type="email"
-                name="email"
-                value={formData.email}
+                name="contactEmail"
+                value={formData.contactEmail}
                 onChange={handleChange}
                 placeholder="Your email..."
                 className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-400"
@@ -83,14 +98,51 @@ const ContactUs: React.FC = () => {
               <label className="block text-gray-700">Phone</label>
               <input
                 type="tel"
-                name="phone"
-                value={formData.phone}
+                name="contactPhone"
+                value={formData.contactPhone}
                 onChange={handleChange}
                 placeholder="Your phone number"
                 className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-400"
               />
             </div>
+            {/* Address ✅ */}
+            <div>
+              <label className="block text-gray-700">Address</label>
+              <input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Your address"
+                className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
 
+            {/* Start Date ✅ */}
+            <div>
+              <label className="block text-gray-700">Start Date</label>
+              <input
+                type="date"
+                name="startDate"
+                value={formData.startDate}
+                onChange={handleChange}
+                className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
+
+            {/* End Date ✅ */}
+            <div>
+              <label className="block text-gray-700">End Date</label>
+              <input
+                type="date"
+                name="endDate"
+                value={formData.endDate}
+                onChange={handleChange}
+                className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
+
+            {/* Service */}
             <div>
               <label className="block text-gray-700">Service</label>
               <select
@@ -98,7 +150,7 @@ const ContactUs: React.FC = () => {
                 onChange={(e) => {
                   const serviceId = Number(e.target.value);
                   setSelectedService(serviceId);
-                  setSelectedPackage(null); // reset package
+                  setSelectedEmployee(null); // reset employee khi đổi service
                 }}
                 className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-400"
               >
@@ -111,25 +163,6 @@ const ContactUs: React.FC = () => {
               </select>
             </div>
 
-            {/* Package (chỉ hiện khi đã chọn service) */}
-            {selectedService && (
-              <div>
-                <label className="block text-gray-700">Package</label>
-                {/* <select
-                  value={selectedPackage ?? ""}
-                  onChange={(e) => setSelectedPackage(Number(e.target.value))}
-                  className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-400"
-                >
-                  <option value="">-- Select package --</option>
-                  {packages.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select> */}
-              </div>
-            )}
-
             {/* Employee */}
             <div>
               <label className="block text-gray-700">Choose your guard</label>
@@ -137,26 +170,29 @@ const ContactUs: React.FC = () => {
                 value={selectedEmployee ?? ""}
                 onChange={(e) => setSelectedEmployee(Number(e.target.value))}
                 className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-400"
+                disabled={!selectedService} // disable nếu chưa chọn service
               >
                 <option value="">-- Select employee --</option>
-                {employees.map((emp) => (
+                {filteredEmployees.map((emp) => (
                   <option key={emp.id} value={emp.id}>
                     {emp.fullName}
                   </option>
                 ))}
               </select>
             </div>
+
             <div>
               <label className="block text-gray-700">Content</label>
               <textarea
-                name="detail"
-                value={formData.detail}
+                name="requestDetails"
+                value={formData.requestDetails}
                 onChange={handleChange}
                 placeholder="Description"
                 rows={4}
                 className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-blue-400"
               />
             </div>
+
             <button
               type="submit"
               className="w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition"
@@ -206,13 +242,12 @@ const ContactUs: React.FC = () => {
             <ul className="space-y-2">
               <li><a href="/" className="hover:underline">Home</a></li>
               <li><a href="/about" className="hover:underline">About Us</a></li>
-              {/* <li><a href="/products" className="hover:underline">Sản phẩm</a></li>
-              <li><a href="/news" className="hover:underline">Tin tức</a></li>
-              <li><a href="/contact" className="hover:underline">Liên hệ</a></li> */}
             </ul>
           </div>
         </div>
       </div>
+
+      {/* Modal xác nhận */}
       <ModalDetail
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
