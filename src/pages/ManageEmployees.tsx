@@ -10,7 +10,6 @@ import {
   fetchEmployeeById
 } from "../redux/employeeSlice";
 import {
-  fetDepartmentById,
   fetchDepartments
 } from "../redux/deparmentSlice"
 import { fetchGrades } from "../redux/gradeSlice";
@@ -19,6 +18,10 @@ import { Department } from "../types/Department";
 import { Grade } from "../types/Grade";
 import CommonModal, { FieldType } from "../Common/Modal";
 import { message } from "antd";
+import { fetchServiceRequests } from "../redux/serviceRequestSlice";
+import { fetchServices } from "../redux/serviceSlice";
+import { Service } from "../types/Service";
+import { ServiceRequest } from "../types/ServiceRequest"
 
 const { Column } = Table;
 
@@ -27,6 +30,8 @@ const ManageEmployees: React.FC = () => {
   const employees = useSelector((state: RootState) => state.employees.items);
   const departments = useSelector((state: RootState) => state.departments);
   const grades = useSelector((state: RootState) => state.grades);
+  const services = useSelector((state: RootState) => state.services);
+  const servicerequests = useSelector((state: RootState) => state.servicerequests);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
@@ -34,6 +39,12 @@ const ManageEmployees: React.FC = () => {
   useEffect(() => {
     dispatch(fetchEmployees());
   }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchServiceRequests());
+  }, [dispatch])
+  useEffect(() => {
+    dispatch(fetchServices())
+  }, [dispatch])
 
   useEffect(() => {
     dispatch(fetchGrades())
@@ -48,6 +59,16 @@ const ManageEmployees: React.FC = () => {
     dispatch(fetchDepartments()); // gọi API khi load trang
   }, [dispatch]);
 
+  const serviceOptions = services.items?.map((service: Service) => ({
+    label: service.name,
+    value: service.id,
+  }));
+
+  const requestOptions = servicerequests.items?.map((request: ServiceRequest) => ({
+    label: request.clientName,
+    value: request.id,
+  }))
+
   const departmentOptions = departments.items?.map((dep: Department) => ({
     label: dep.name,
     value: dep.id,   // dùng id để submit
@@ -60,50 +81,75 @@ const ManageEmployees: React.FC = () => {
 
   const handleEdit = async (employee: Employee) => {
     try {
-    // gọi API để lấy detail từ backend
-    const fullEmployee = await dispatch(fetchEmployeeById(employee.id)).unwrap();
+      // gọi API để lấy detail từ backend
+      const fullEmployee = await dispatch(fetchEmployeeById(employee.id)).unwrap();
 
-    // lưu vào state local để hiển thị trong form
-    setEditingEmployee(fullEmployee);
+      // lưu vào state local để hiển thị trong form
+      setEditingEmployee(fullEmployee);
 
-    // mở modal
-    setModalVisible(true);
-  } catch (error) {
-    console.error("Failed to fetch employee detail:", error);
-  }
-  };
-
-  const handleSubmit = (values: any) => {
-    if (editingEmployee) {
-      dispatch(editEmployee({ id: editingEmployee.id, employee: { ...editingEmployee, ...values } }));
-    } else {
-      dispatch(addEmployee(values));
+      // mở modal
+      setModalVisible(true);
+    } catch (error) {
+      console.error("Failed to fetch employee detail:", error);
     }
-    setModalVisible(false);
   };
+
+  const handleSubmit = async (values: any) => {
+    try {
+      if (editingEmployee) {
+        await dispatch(editEmployee({ id: editingEmployee.id, employee: { ...editingEmployee, ...values } })).unwrap();
+        message.success("Employee updated");
+      } else {
+        await dispatch(addEmployee(values)).unwrap();
+        message.success("Employee added");
+      }
+
+      // fetch lại danh sách để UI cập nhật
+      dispatch(fetchEmployees());
+      setModalVisible(false);
+    } catch (error) {
+      message.error("Operation failed");
+    }
+  };
+
 
   // định nghĩa các field riêng cho Employee
   const employeeFields: FieldType[] = [
     { name: "firstName", label: "First Name", rules: [{ required: true }], type: "text" },
     { name: "lastName", label: "Last Name", rules: [{ required: true }], type: "text" },
-    { name: "fullName", label: "Full Name", rules: [{ required: false }], type: "text", disabled:true},
+    { name: "fullName", label: "Full Name", rules: [{ required: false }], type: "text", disabled: true },
     { name: "address", label: "Address", rules: [{ required: true }], type: "text" },
-    { name: "phone", label: "Phone",rules: [{ required: true }], type: "text" },
-    { name: "email", label: "Email",rules: [{ required: true }], type: "email" },
-    { name: "education", label: "Education",rules: [{ required: false }], type: "text" },
-    { name: "departmentId", 
+    { name: "phone", label: "Phone", rules: [{ required: true }], type: "text" },
+    { name: "email", label: "Email", rules: [{ required: true }], type: "email" },
+    { name: "education", label: "Education", rules: [{ required: false }], type: "text" },
+    {
+      name: "departmentId",
       label: "Department",
-      rules: [{ required: false }], 
+      rules: [{ required: false }],
       type: "select",
       options: departmentOptions,
     },
-    { name: "gradeId", 
+    {
+      name: "gradeId",
       label: "Grade",
-      rules: [{ required: false }], 
-      type: "select", 
+      rules: [{ required: false }],
+      type: "select",
       options: gradeOptions,
     },
-    { name: "jobTitle", label: "Job Title", type: "text" },
+    {
+      name: "jobId",
+      label: "Job",
+      rules: [{ required: false }],
+      type: "select",
+      options: requestOptions,
+    },
+    {
+      name: "serviceId",
+      label: "Service",
+      rules: [{ required: false }],
+      type: "select",
+      options: serviceOptions,
+    },
     { name: "dateOfJoin", label: "Date Of Join", type: "date" },
     {
       name: "status",
@@ -118,15 +164,15 @@ const ManageEmployees: React.FC = () => {
   ];
 
   const handleDelete = (id: number) => {
-  dispatch(removeEmployee(id))
-    .unwrap()
-    .then(() => message.success("Employee deleted"))
-    .catch(() => message.error("Delete failed"));
-};
+    dispatch(removeEmployee(id))
+      .unwrap()
+      .then(() => message.success("Employee deleted"))
+      .catch(() => message.error("Delete failed"));
+  };
 
   return (
     <>
-    <h1 className="text-center text-2xl font-bold">List Employee</h1>
+      <h1 className="text-center text-2xl font-bold">List Employee</h1>
       <Button type="primary" onClick={handleAdd} style={{ marginBottom: 16 }}>
         Add Employee
       </Button>
@@ -136,7 +182,8 @@ const ManageEmployees: React.FC = () => {
         <Column title="Full Name" dataIndex="fullName" key="fullName" />
         <Column title="Phone" dataIndex="phone" key="phone" />
         <Column title="Email" dataIndex="email" key="email" />
-        <Column title="Job Title" dataIndex="jobTitle" key="jobTitle" />
+        <Column title="Job" dataIndex="jobName" key="jobName" />
+        <Column title="Service" dataIndex="serviceName" key="serviceName" />
         <Column
           title="Status"
           dataIndex="status"

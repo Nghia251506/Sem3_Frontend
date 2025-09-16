@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useEffect,useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Shield, Menu, X, LogOut, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import connection from "../Signalr/jobHub"; // file bạn tạo sẵn
+import { toast } from "react-toastify"; // nếu muốn popup
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,8 +16,6 @@ const Header = () => {
     { path: '/business', label: 'Our Business' },
     { path: '/network', label: 'Our Network' },
     { path: '/careers', label: 'Careers' },
-    { path: '/clients', label: 'Clients' },
-    { path: '/testimonials', label: 'Testimonials' },
     { path: '/contact', label: 'Contact Us' }
   ];
 
@@ -38,6 +38,25 @@ const Header = () => {
     logout();
     setIsMenuOpen(false);
   };
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    connection.start()
+      .then(() => {
+        console.log("SignalR connected!");
+      })
+      .catch(err => console.error("SignalR Error: ", err));
+
+    connection.on("ReceiveJob", (job) => {
+      console.log("Có job mới:", job);
+
+      // hiện thông báo toast
+      toast.info(`Job mới từ ${job.clientName}`, {
+        position: "top-right",
+        autoClose: 5000,
+      });
+    })});
 
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50">
